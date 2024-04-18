@@ -15,10 +15,8 @@ class AuthorTest extends TestCase
 
     public function test_can_create_author()
     {
-        $data = [
-            'name' => 'John Doe',
-            'birthday' => '1980-05-15',
-        ];
+        $data = Author::factory()->make()->toArray();
+
 
         $response = $this->postJson('/api/authors', $data);
 
@@ -30,6 +28,15 @@ class AuthorTest extends TestCase
                 'created_at',
                 'updated_at'
             ]);
+    }
+
+    public function test_cannot_create_author_with_missing_data()
+    {
+        $data = ["name" => "Fulano"];
+
+        $response = $this->postJson('/api/authors', $data);
+
+        $response->assertUnprocessable();
     }
 
     public function test_can_get_all_authors()

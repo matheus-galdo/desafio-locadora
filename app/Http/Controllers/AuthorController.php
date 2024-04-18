@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTO\AuthorDTO;
+use App\Http\Requests\AuthorRequest;
 use App\Models\Author;
 use App\Services\AuthorService;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class AuthorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AuthorRequest $request)
     {
         $authorDTO = new AuthorDTO(
             name: $request->input('name'),
@@ -48,7 +49,7 @@ class AuthorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Author $author)
+    public function update(AuthorRequest $request, Author $author)
     {
         $authorDTO = new AuthorDTO(
             name: $request->input('name') ?? $author->name,

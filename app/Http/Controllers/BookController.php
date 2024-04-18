@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTO\BookDTO;
+use App\Http\Requests\BookRequest;
 use Illuminate\Http\Request;
 use App\Services\BookService;
 use App\Models\Book;
@@ -22,7 +23,7 @@ class BookController extends Controller
         return response()->json($books, 200);
     }
 
-    public function store(Request $request)
+    public function store(BookRequest $request)
     {
         $bookDTO = new BookDTO(
             title: $request->input('title'),
@@ -46,7 +47,7 @@ class BookController extends Controller
         return response()->json($book, 200);
     }
 
-    public function update(Request $request, Book $book)
+    public function update(BookRequest $request, Book $book)
     {
         $bookDTO = new BookDTO(
             title: $request->input('title') ?? $book->title,

@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateBookRequest extends FormRequest
+class AuthorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,11 +21,16 @@ class CreateBookRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'title' => 'required|string|max:255',
-            'publication_year' => 'required|integer|max:' . date('Y'),
-            'author_ids' => 'required|array',
-            'author_ids.*' => 'integer|exists:authors,id'
+        $rules = [
+            'name' => 'required|string|max:255',
+            'birthday' => 'required|date',
         ];
+
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
+            $rules['name'] = 'nullable|string|max:255';
+            $rules['birthday'] = 'nullable|date';
+        }
+
+        return $rules;
     }
 }

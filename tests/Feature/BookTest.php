@@ -12,8 +12,7 @@ class BookTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function can_create_a_book()
+    public function test_can_create_a_book()
     {
         $author = Author::factory()->create();
 
@@ -23,24 +22,21 @@ class BookTest extends TestCase
             'author_ids' => [$author->id],
         ]);
 
-
         $response->assertCreated();
         $this->assertDatabaseHas('books', ['title' => 'Livro Teste']);
     }
 
-    /** @test */
-    public function can_get_all_books()
+    public function test_can_get_all_books()
     {
         Book::factory()->count(3)->create();
 
         $response = $this->getJson('/api/books');
 
         $response->assertOk();
-        $response->assertJsonCount(3); // Verifica se retornou 3 livros
+        $response->assertJsonCount(3);
     }
 
-    /** @test */
-    public function can_get_a_single_book()
+    public function test_can_get_a_single_book()
     {
         $book = Book::factory()->create();
 
@@ -50,8 +46,7 @@ class BookTest extends TestCase
         $response->assertJson(['title' => $book->title]);
     }
 
-    /** @test */
-    public function can_update_a_book()
+    public function test_can_update_a_book()
     {
         $book = Book::factory()->create();
         $newTitle = 'Novo Título';
@@ -66,8 +61,7 @@ class BookTest extends TestCase
         $this->assertDatabaseHas('books', ['id' => $book->id, 'title' => $newTitle]);
     }
 
-    /** @test */
-    public function can_delete_a_book()
+    public function test_can_delete_a_book()
     {
         $book = Book::factory()->create();
 
@@ -75,5 +69,14 @@ class BookTest extends TestCase
 
         $response->assertOk();
         $this->assertDatabaseMissing('books', ['id' => $book->id]);
+    }
+
+    public function test_cannot_delete_a_inexisting_book()
+    {
+        $fakeId = fake()->randomNumber(5);
+
+        $response = $this->deleteJson("/api/books/{$fakeId}");
+
+        $response->assertNotFound();
     }
 }

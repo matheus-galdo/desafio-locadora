@@ -80,6 +80,15 @@ class LoanTest extends TestCase
 
         $response = $this->postJson("/api/loans/{$loan->id}/return");
 
-        $response->assertStatus(409);
+        $response->assertConflict();
+    }
+
+    public function test_should_fail_on_inexisting_loan()
+    {
+        $fakeId = fake()->randomNumber(5);
+
+        $response = $this->postJson("/api/loans/{$fakeId}/return");
+
+        $response->assertNotFound();
     }
 }

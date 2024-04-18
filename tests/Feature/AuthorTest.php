@@ -13,7 +13,6 @@ class AuthorTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
     public function test_can_create_author()
     {
         $data = [
@@ -33,7 +32,6 @@ class AuthorTest extends TestCase
             ]);
     }
 
-    /** @test */
     public function test_can_get_all_authors()
     {
         Author::factory()->count(3)->create();
@@ -45,7 +43,6 @@ class AuthorTest extends TestCase
             ->assertJsonCount($ammoutOfExpectedAuthors);
     }
 
-    /** @test */
     public function test_can_get_author_by_id()
     {
         $author = Author::factory()->create();
@@ -60,7 +57,6 @@ class AuthorTest extends TestCase
             ]);
     }
 
-    /** @test */
     public function test_can_update_author()
     {
         $author = Author::factory()->create();
@@ -80,16 +76,12 @@ class AuthorTest extends TestCase
             ]);
     }
 
-    /** @test */
     public function test_can_delete_author()
     {
         $author = Author::factory()->create();
-
         $response = $this->deleteJson('/api/authors/' . $author->id);
 
         $response->assertStatus(204);
-
         $this->assertDatabaseMissing('authors', ['id' => $author->id]);
     }
 }
-

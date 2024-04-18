@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('book_id')->constrained();
             $table->date('loan_date');
-            $table->date('due_date');
+            $table->date('return_date')->nullable();
             $table->timestamps();
         });
     }

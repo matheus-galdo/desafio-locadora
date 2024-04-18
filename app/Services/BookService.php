@@ -29,7 +29,6 @@ class BookService
 
         $book = $this->bookRepository->createBook($bookData);
 
-        // Associar autores ao livro (relacionamento muitos para muitos)
         $book->authors()->sync($bookDTO->author_ids);
 
         return $book;
@@ -48,8 +47,6 @@ class BookService
         ];
 
         $updatedBook = $this->bookRepository->updateBook($book->id, $bookData);
-
-        // Atualizar autores associados ao livro
         $updatedBook->authors()->sync($bookDTO->author_ids);
 
         return $updatedBook;

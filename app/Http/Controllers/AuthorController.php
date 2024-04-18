@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\DTO\AuthorDTO;
+use App\Models\Author;
 use App\Services\AuthorService;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
 {
     protected $authorService;
-    
+
     public function __construct(AuthorService $authorService)
     {
         $this->authorService = $authorService;
@@ -47,14 +48,14 @@ class AuthorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Author $author)
     {
         $authorDTO = new AuthorDTO(
-            name: $request->input('name'),
-            birthday: $request->input('birthday')
+            name: $request->input('name') ?? $author->name,
+            birthday: $request->input('birthday') ?? $author->birthday
         );
 
-        return $this->authorService->updateAuthor($id, $authorDTO);
+        return $this->authorService->updateAuthor($author->id, $authorDTO);
     }
 
     /**

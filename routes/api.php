@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\LoanController;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [AuthController::class, 'register']);
@@ -19,7 +20,5 @@ Route::group(['middleware' => 'auth.jwt'], function () {
 Route::apiResource('authors', AuthorController::class);
 Route::apiResource('books', BookController::class);
 
-
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+Route::apiResource('loans', LoanController::class)->only(['index','store','show']);
+Route::post('/loans/{loan}/return', [LoanController::class, 'return']);

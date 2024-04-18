@@ -11,7 +11,6 @@ class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @check if a user is created */
     public function test_user_can_register()
     {
         User::factory();
@@ -29,7 +28,6 @@ class AuthControllerTest extends TestCase
             ]);
     }
 
-    /** @check if user can log in */
     public function test_user_can_login()
     {
         $user = User::factory()->create([

@@ -23,7 +23,6 @@ class LoanTest extends TestCase
             'loan_date' => now()->format('Y-m-d')
         ]);
 
-            
         $response->assertStatus(201)
             ->assertJsonStructure([
                 'id',
@@ -31,6 +30,36 @@ class LoanTest extends TestCase
                 'book_id',
                 'loan_date',
             ]);
+    }
+
+    public function test_cannot_create_loan_with_inexisting_book()
+    {
+        $user = User::factory()->create();
+        $fakeId = fake()->randomNumber(5);
+
+        $response = $this->postJson('/api/loans', [
+            'user_id' => $user->id,
+            'book_id' => $fakeId,
+            'loan_date' => now()->format('Y-m-d')
+        ]);
+
+            
+        $response->assertUnprocessable();
+    }
+
+    public function test_cannot_create_loan_with_inexisting_user()
+    {
+        $book = Book::factory()->create();
+        $fakeId = fake()->randomNumber(5);
+
+        $response = $this->postJson('/api/loans', [
+            'user_id' => $fakeId,
+            'book_id' => $book->id,
+            'loan_date' => now()->format('Y-m-d')
+        ]);
+
+            
+        $response->assertUnprocessable();
     }
 
     public function test_can_get_loan()

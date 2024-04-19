@@ -26,6 +26,19 @@ class BookTest extends TestCase
         $this->assertDatabaseHas('books', ['title' => 'Livro Teste']);
     }
 
+    public function test_cannot_create_a_book_with_an_inexisting_author_id()
+    {
+        $fakeId = fake()->randomNumber(5);
+
+        $response = $this->postJson('/api/books', [
+            'title' => 'Livro Teste',
+            'publication_year' => 2022,
+            'author_ids' => [$fakeId],
+        ]);
+
+        $response->assertUnprocessable();
+    }
+
     public function test_can_get_all_books()
     {
         Book::factory()->count(3)->create();
@@ -46,9 +59,21 @@ class BookTest extends TestCase
         $response->assertJson(['title' => $book->title]);
     }
 
+    public function test_cannot_get_an_inexisting_book()
+    {
+        $fakeId = fake()->randomNumber(5);
+
+        $response = $this->getJson("/api/books/{$fakeId}");
+
+        $response->assertNotFound();
+    }
+
     public function test_can_update_a_book()
     {
-        $book = Book::factory()->create();
+        $book = Book::factory()
+            ->has(Author::factory())
+            ->create();
+
         $newTitle = 'Novo Título';
 
         $response = $this->putJson("/api/books/{$book->id}", [
@@ -71,7 +96,7 @@ class BookTest extends TestCase
         $this->assertDatabaseMissing('books', ['id' => $book->id]);
     }
 
-    public function test_cannot_delete_a_inexisting_book()
+    public function test_cannot_delete_an_inexisting_book()
     {
         $fakeId = fake()->randomNumber(5);
 

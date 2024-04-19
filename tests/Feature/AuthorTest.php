@@ -18,7 +18,6 @@ class AuthorTest extends TestCase
     {
         $data = Author::factory()->make()->toArray();
 
-
         $response = $this->postJson('/api/authors', $data);
 
         $response->assertStatus(201)
@@ -65,6 +64,15 @@ class AuthorTest extends TestCase
             ]);
     }
 
+    public function test_cannot_get_an_inexisting_author_by_id()
+    {
+        $fakeId = fake()->randomNumber(5);
+
+        $response = $this->getJson('/api/authors/' . $fakeId);
+
+        $response->assertNotFound();
+    }
+
     public function test_can_update_author()
     {
         $author = Author::factory()->create();
@@ -104,7 +112,7 @@ class AuthorTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_cannot_delete_a_inexisting_author()
+    public function test_cannot_delete_an_inexisting_author()
     {
         $fakeId = fake()->randomNumber(5);
 

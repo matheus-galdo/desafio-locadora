@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Author;
+use App\Models\Book;
 
 class AuthorTest extends TestCase
 {
@@ -88,7 +89,27 @@ class AuthorTest extends TestCase
         $author = Author::factory()->create();
         $response = $this->deleteJson('/api/authors/' . $author->id);
 
-        $response->assertStatus(204);
+        $response->assertStatus(200);
         $this->assertDatabaseMissing('authors', ['id' => $author->id]);
+    }
+
+    public function test_cannot_delete_author_that_has_books()
+    {
+        $author = Author::factory()
+            ->has(Book::factory())
+            ->create();
+
+        $response = $this->deleteJson('/api/authors/' . $author->id);
+
+        $response->assertForbidden();
+    }
+
+    public function test_cannot_delete_a_inexisting_author()
+    {
+        $fakeId = fake()->randomNumber(5);
+
+        $response = $this->deleteJson("/api/authors/{$fakeId}");
+
+        $response->assertNotFound();
     }
 }

@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Repositories\AuthorRepository;
 use App\DTO\AuthorDTO;
+use App\Models\Author;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthorService
 {
@@ -44,8 +46,13 @@ class AuthorService
         return $this->authorRepository->updateAuthor($id, $data);
     }
 
-    public function deleteAuthor(int $id)
+    public function deleteAuthor(Author $author)
     {
-        return $this->authorRepository->deleteAuthor($id);
+        if ($this->authorRepository->hasBooksLinked($author)) {
+            abort(Response::HTTP_FORBIDDEN, "O autor não pode ser deletado, ele possui livros cadastrados");
+        }
+
+        $author->books()->detach();
+        return $this->authorRepository->deleteAuthor($author->id);
     }
 }

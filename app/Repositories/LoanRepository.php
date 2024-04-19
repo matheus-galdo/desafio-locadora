@@ -33,4 +33,9 @@ class LoanRepository
         $loan = $this->getLoanById($id);
         $loan->delete();
     }
+
+    public function isBookAlreadyLoaned($bookId)
+    {
+        return Loan::where('book_id', $bookId)->whereNull('return_date')->exists();
+    }
 }

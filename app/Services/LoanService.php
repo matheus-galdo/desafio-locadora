@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTO\LoanDTO;
 use App\Repositories\LoanRepository;
 use App\Models\Loan;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoanService
 {
@@ -22,9 +23,9 @@ class LoanService
 
     public function createLoan(LoanDTO $loanDTO): Loan
     {
-        // if ($this->loanRepository->isBookAlreadyLoaned($loanDTO->book_id)) {
-        //     throw new \Exception('Este livro já está emprestado.');
-        // }
+        if ($this->loanRepository->isBookAlreadyLoaned($loanDTO->book_id)) {
+            abort(Response::HTTP_FORBIDDEN, 'Este livro já está emprestado');
+        }
 
         $loanData = [
             'user_id' => $loanDTO->user_id,
@@ -32,6 +33,7 @@ class LoanService
             'loan_date' => $loanDTO->loan_date,
             'due_date' => $loanDTO->return_date,
         ];
+        
         //TODO: mandar o email da notificação
 
         $loan = $this->loanRepository->createLoan($loanData);
@@ -47,7 +49,7 @@ class LoanService
     public function returnLoan(Loan $loan): Loan
     {
         if (isset($loan->return_date)) {
-            abort(409, "Esse empréstimo já foi devolvido");
+            abort(Response::HTTP_CONFLICT, "Esse empréstimo já foi devolvido");
         }
 
         //vai pro repository

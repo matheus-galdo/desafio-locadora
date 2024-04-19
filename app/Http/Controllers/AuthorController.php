@@ -62,9 +62,9 @@ class AuthorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Author $author)
     {
-        $this->authorService->deleteAuthor($id);
-        return response()->json(data: [], status: 204);
+        $this->authorService->deleteAuthor($author);
+        return response()->json(data: ['message' => 'Autor removido com sucesso'], status: 200);
     }
 }

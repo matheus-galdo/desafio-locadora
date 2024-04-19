@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Author;
+use App\Models\Book;
 
 class AuthorRepository
 {
@@ -32,5 +33,12 @@ class AuthorRepository
     {
         $author = $this->getAuthorById($id);
         $author->delete();
+    }
+
+    public function hasBooksLinked(Author $author): bool
+    {
+        return Book::whereHas('authors', function ($builder) use ($author) {
+            $builder->where('author_id', $author->id);
+        })->exists();
     }
 }

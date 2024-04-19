@@ -36,7 +36,6 @@ class LoanService
             'due_date' => $loanDTO->return_date,
         ];
 
-        //TODO: mandar o email da notificação
         $loan = $this->loanRepository->createLoan($loanData);
         
         $user = $loan->user;

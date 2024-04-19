@@ -23,14 +23,14 @@ class BookRequest extends FormRequest
     {
         $rules = [
             'title' => 'required|string|max:255',
-            'publication_year' => 'required|integer|max:' . date('Y'),
+            'publication_year' => 'required|integer',
             'author_ids' => 'required|array',
             'author_ids.*' => 'integer|exists:authors,id'
         ];
 
         if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             $rules['title'] = 'nullable|string|max:255';
-            $rules['publication_year'] = 'nullable|string|max:255';
+            $rules['publication_year'] = 'required|integer';
             $rules['author_ids'] = 'nullable|array';
         }
 

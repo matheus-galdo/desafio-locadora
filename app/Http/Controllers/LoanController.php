@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTO\LoanDTO;
+use App\Http\Requests\LoanRequest;
 use Illuminate\Http\Request;
 use App\Services\LoanService;
 use App\Models\Loan;
@@ -22,7 +23,7 @@ class LoanController extends Controller
         return response()->json($loans, 200);
     }
 
-    public function store(Request $request)
+    public function store(LoanRequest $request)
     {
         $loanDTO = new LoanDTO(
             user_id: $request->input('user_id'),
@@ -40,7 +41,7 @@ class LoanController extends Controller
         return response()->json($loan, 200);
     }
 
-    public function return(Request $request, Loan $loan)
+    public function return(Loan $loan)
     {
         $updatedLoan = $this->loanService->returnLoan($loan);
 

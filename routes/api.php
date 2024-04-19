@@ -12,13 +12,15 @@ Route::post('register', [AuthController::class, 'register']);
 
 // Rotas protegidas por autenticação JWT
 Route::group(['middleware' => 'auth.jwt'], function () {
+    Route::get('me', [AuthController::class, 'user']);
+
     Route::get('user', [AuthController::class, 'user']);
     Route::post('logout', [AuthController::class, 'logout']);
+
+
+    Route::apiResource('authors', AuthorController::class);
+    Route::apiResource('books', BookController::class);
+
+    Route::apiResource('loans', LoanController::class)->only(['index', 'store', 'show']);
+    Route::post('/loans/{loan}/return', [LoanController::class, 'return']);
 });
-
-
-Route::apiResource('authors', AuthorController::class);
-Route::apiResource('books', BookController::class);
-
-Route::apiResource('loans', LoanController::class)->only(['index','store','show']);
-Route::post('/loans/{loan}/return', [LoanController::class, 'return']);

@@ -7,6 +7,7 @@ use App\Http\Requests\LoanRequest;
 use Illuminate\Http\Request;
 use App\Services\LoanService;
 use App\Models\Loan;
+use Illuminate\Support\Facades\Auth;
 
 class LoanController extends Controller
 {
@@ -26,7 +27,8 @@ class LoanController extends Controller
     public function store(LoanRequest $request)
     {
         $loanDTO = new LoanDTO(
-            user_id: $request->input('user_id'),
+            user_id: Auth::id(),
+
             book_id: $request->input('book_id'),
             loan_date: $request->input('loan_date')
         );

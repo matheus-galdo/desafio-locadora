@@ -8,25 +8,21 @@ Um projeto de uma pequena locadora de livros.
 - Composer
 - Servidor web (por exemplo, Apache, Nginx) ou servidor embutido do PHP
 
+Também é possível fazer a instalação apenas utilizando docker e docker-compose
+
 ## Instalação
-Clone o repositório:
+Clone o repositório e navegue até o diretório do projeto::
 ```
 git clone https://github.com/matheus-galdo/desafio-locadora
-```
-
-Navegue até o diretório do projeto:
-```
 cd desafio-locadora
 ```
-Você pode instalar as dependências do projeto e executar o servidor diretamente na sua máquina ou, alternativamente, executar o projeto com docker
 
-### Instalação na máquina host
 Instale as dependências usando o Composer:
 ```
 composer install
 ```
 
-Copie o arquivo de configuração .env.example para .env e configure as variáveis de ambiente, incluindo as configurações de banco de dados:
+Faça uma cópia do arquivo de configuração .env.example e chame-a de .env, configure as variáveis de ambiente neste arquivo, incluindo as configurações de banco de dados:
 ```
 cp .env.example .env
 ```
@@ -46,10 +42,36 @@ Inicie o servidor embutido do PHP (ou configure seu servidor web) e acesse o apl
 php artisan serve
 ```
 
-### Instalação com docker
+Inicie o worker da fila de jobs assíncronos que será responsável por executar os jobs cadastrados no banco de dados:
+```
+php artisan queue:work
+```
+
+### Instalação usando docker
+Para instalar o projeto usando docker, siga os seguintes passos:
+
+Clone o repositório e navegue até o diretório do projeto::
+```
+git clone https://github.com/matheus-galdo/desafio-locadora
+cd desafio-locadora
+```
+
+Faça uma cópia do arquivo de configuração .env.example e chame-a de .env, configure as variáveis de ambiente neste arquivo, incluindo as configurações de banco de dados:
+```
+cp .env.example .env
+```
+
+Execute os containers do projeto e do banco de dados
+```
+docker-compose up
+```
+
+
+
 
 ## API
 Veja a lista com os endpoints da API e como usar cada um deles. 
+Para ver mais exemplos das rotas, execute o projeto e navegue até http://localhost/docs
 
 ### Authentication
 <details>
@@ -58,13 +80,13 @@ Veja a lista com os endpoints da API e como usar cada um deles.
 </details>
 
 <details>
-    <summary>POST /api/logout</summary>
-    Encerra a sessão do usuário
+    <summary>POST /api/register</summary>
+    Registra um novo usuário na aplicação
 </details>
 
 <details>
-    <summary>POST /api/register</summary>
-    Registra um novo usuário na aplicação
+    <summary>POST /api/me</summary>
+    Retorna o usuário logado
 </details>
 
 ### Authors

@@ -17,17 +17,11 @@ class AuthorController extends Controller
         $this->authorService = $authorService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return $this->authorService->getAllAuthors();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(AuthorRequest $request)
     {
         $authorDTO = new AuthorDTO(
@@ -38,17 +32,11 @@ class AuthorController extends Controller
         return $this->authorService->createAuthor($authorDTO);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         return $this->authorService->getAuthorById($id);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(AuthorRequest $request, Author $author)
     {
         $authorDTO = new AuthorDTO(
@@ -59,9 +47,6 @@ class AuthorController extends Controller
         return $this->authorService->updateAuthor($author->id, $authorDTO);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Author $author)
     {
         $this->authorService->deleteAuthor($author);

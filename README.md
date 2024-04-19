@@ -1,66 +1,161 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Desafio Locadora
+Um projeto de uma pequena locadora de livros.
 
-## About Laravel
+## Pré-requisitos
+- PHP >= 8.x
+- Composer
+- Servidor web (por exemplo, Apache, Nginx) ou servidor embutido do PHP
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Instalação
+Clone o repositório:
+```
+git clone https://github.com/matheus-galdo/desafio-locadora
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Navegue até o diretório do projeto:
+```
+cd desafio-locadora
+```
+Você pode instalar as dependências do projeto e executar o servidor diretamente na sua máquina ou, alternativamente, executar o projeto com docker
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Instalação na máquina host
+Instale as dependências usando o Composer:
+```
+composer install
+```
 
-## Learning Laravel
+Copie o arquivo de configuração .env.example para .env e configure as variáveis de ambiente, incluindo as configurações de banco de dados:
+```
+cp .env.example .env
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Gere a chave de aplicativo:
+```
+php artisan key:generate
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Execute as migrações do banco de dados (e, opcionalmente, os seeders):
+```
+php artisan migrate --seed
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Inicie o servidor embutido do PHP (ou configure seu servidor web) e acesse o aplicativo no navegador:
+```
+php artisan serve
+```
 
-## Laravel Sponsors
+### Instalação com docker
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## API
+Veja a lista com os endpoints da API e como usar cada um deles. 
 
-### Premium Partners
+### Authentication
+<details>
+    <summary>POST /api/login</summary>
+    Realiza o login de um usuário e retorna o token de autenticação JWT
+</details>
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+<details>
+    <summary>POST /api/logout</summary>
+    Encerra a sessão do usuário
+</details>
 
-## Contributing
+<details>
+    <summary>POST /api/register</summary>
+    Registra um novo usuário na aplicação
+</details>
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Authors
+Todas as rotas de Author são autenticadas, então é necessário enviar o token de sessão no header Authorization
+<details>
+    <summary>GET /api/authors</summary>
+    Retorna uma lista de todos os autores cadastrados
+</details>
 
-## Code of Conduct
+<details>
+    <summary>POST /api/authors</summary>
+    Cria um novo autor com os dados fornecidos
+</details>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+<details>
+    <summary>GET /api/authors/{author}</summary>
+    Exibe os detalhes de um autor específico
+</details>
 
-## Security Vulnerabilities
+<details>
+    <summary>POST /api/authors</summary>
+    Cria um novo autor com os dados fornecidos
+</details>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+<details>
+    <summary>PUT, PATCH /api/authors/{author}</summary>
+    Atualiza os dados de um autor existente
+</details>
 
-## License
+<details>
+    <summary>DELETE /api/authors/{author}</summary>
+    Remove um autor do sistema
+</details>
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Books
+Todas as rotas de Books são autenticadas, então é necessário enviar o token de sessão no header Authorization
+<details>
+    <summary>GET /api/books</summary>
+    Retorna uma lista de todos os livros cadastrados
+</details>
+
+<details>
+    <summary>POST /api/books</summary>
+    Cria um novo livro com os dados fornecidos
+</details>
+
+<details>
+    <summary>GET /api/books/{book}</summary>
+    Exibe os detalhes de um livro específico
+</details>
+
+<details>
+    <summary>POST /api/books</summary>
+    Cria um novo livro com os dados fornecidos
+</details>
+
+<details>
+    <summary>PUT, PATCH /api/books/{book}</summary>
+    Atualiza os dados de um livro existente
+</details>
+
+<details>
+    <summary>DELETE /api/books/{book}</summary>
+    Remove um livro do sistema
+</details>
+
+### Loans
+Todas as rotas de Loan são autenticadas, então é necessário enviar o token de sessão no header Authorization
+<details>
+    <summary>GET /api/loans</summary>
+    Retorna uma lista de todos os empréstimos cadastrados
+</details>
+
+<details>
+    <summary>POST /api/loans</summary>
+    Registra um novo empréstimo de livro para um usuário
+</details>
+
+<details>
+    <summary>GET /api/loans/{loan}</summary>
+    Exibe os detalhes de um empréstimo específico
+</details>
+
+<details>
+    <summary>POST /api/loans/{loan}/return</summary>
+    Marca um empréstimo como devolvido
+</details>
+
+## Testes
+Execute os testes automatizados para garantir que o projeto esteja funcionando corretamente:
+```
+php artisan test
+```
+

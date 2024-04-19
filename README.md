@@ -66,9 +66,6 @@ Execute os containers do projeto e do banco de dados
 docker-compose up
 ```
 
-
-
-
 ## API
 Veja a lista com os endpoints da API e como usar cada um deles. 
 Para ver mais exemplos das rotas, execute o projeto e navegue até http://localhost/docs

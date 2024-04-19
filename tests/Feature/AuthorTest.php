@@ -2,13 +2,12 @@
 
 namespace Tests\Feature;
 
-namespace Tests\Feature;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\Author;
 use App\Models\Book;
+use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthorTest extends TestCase
 {
@@ -16,9 +15,13 @@ class AuthorTest extends TestCase
 
     public function test_can_create_author()
     {
+        $user = User::factory()->create();
+        $token = JWTAuth::fromUser($user);
+
         $data = Author::factory()->make()->toArray();
 
-        $response = $this->postJson('/api/authors', $data);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])
+            ->postJson('/api/authors', $data);
 
         $response->assertStatus(201)
             ->assertJsonStructure([
@@ -32,18 +35,27 @@ class AuthorTest extends TestCase
 
     public function test_cannot_create_author_with_missing_data()
     {
-        $data = ["name" => "Fulano"];
+        $user = User::factory()->create();
+        $token = JWTAuth::fromUser($user);
 
-        $response = $this->postJson('/api/authors', $data);
+        $data = Author::factory()->make()->toArray();
+        unset($data['birthday']);
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])
+            ->postJson('/api/authors', $data);
 
         $response->assertUnprocessable();
     }
 
     public function test_can_get_all_authors()
     {
+        $user = User::factory()->create();
+        $token = JWTAuth::fromUser($user);
+
         Author::factory()->count(3)->create();
 
-        $response = $this->getJson('/api/authors');
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])
+            ->getJson('/api/authors');
 
         $ammoutOfExpectedAuthors = 3;
         $response->assertStatus(200)
@@ -52,9 +64,13 @@ class AuthorTest extends TestCase
 
     public function test_can_get_author_by_id()
     {
+        $user = User::factory()->create();
+        $token = JWTAuth::fromUser($user);
+
         $author = Author::factory()->create();
 
-        $response = $this->getJson('/api/authors/' . $author->id);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])
+            ->getJson('/api/authors/' . $author->id);
 
         $response->assertStatus(200)
             ->assertJson([
@@ -66,23 +82,28 @@ class AuthorTest extends TestCase
 
     public function test_cannot_get_an_inexisting_author_by_id()
     {
+        $user = User::factory()->create();
+        $token = JWTAuth::fromUser($user);
+
         $fakeId = fake()->randomNumber(5);
 
-        $response = $this->getJson('/api/authors/' . $fakeId);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])
+            ->getJson('/api/authors/' . $fakeId);
 
         $response->assertNotFound();
     }
 
     public function test_can_update_author()
     {
+        $user = User::factory()->create();
+        $token = JWTAuth::fromUser($user);
+
         $author = Author::factory()->create();
+        $data = $author->toArray();
+        $data['name'] = 'Updated Name';
 
-        $data = [
-            'name' => 'Updated Name',
-            'birthday' => '1990-10-20',
-        ];
-
-        $response = $this->putJson('/api/authors/' . $author->id, $data);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])
+            ->putJson('/api/authors/' . $author->id, $data);
 
         $response->assertStatus(200)
             ->assertJson([
@@ -94,8 +115,13 @@ class AuthorTest extends TestCase
 
     public function test_can_delete_author()
     {
+        $user = User::factory()->create();
+        $token = JWTAuth::fromUser($user);
+
         $author = Author::factory()->create();
-        $response = $this->deleteJson('/api/authors/' . $author->id);
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])
+            ->deleteJson('/api/authors/' . $author->id);
 
         $response->assertStatus(200);
         $this->assertDatabaseMissing('authors', ['id' => $author->id]);
@@ -103,20 +129,28 @@ class AuthorTest extends TestCase
 
     public function test_cannot_delete_author_that_has_books()
     {
+        $user = User::factory()->create();
+        $token = JWTAuth::fromUser($user);
+
         $author = Author::factory()
             ->has(Book::factory())
             ->create();
 
-        $response = $this->deleteJson('/api/authors/' . $author->id);
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])
+            ->deleteJson('/api/authors/' . $author->id);
 
         $response->assertForbidden();
     }
 
     public function test_cannot_delete_an_inexisting_author()
     {
+        $user = User::factory()->create();
+        $token = JWTAuth::fromUser($user);
+
         $fakeId = fake()->randomNumber(5);
 
-        $response = $this->deleteJson("/api/authors/{$fakeId}");
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $token])
+            ->deleteJson("/api/authors/{$fakeId}");
 
         $response->assertNotFound();
     }

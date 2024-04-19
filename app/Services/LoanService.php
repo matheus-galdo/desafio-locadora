@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\DTO\LoanDTO;
+use App\Jobs\ProcessLoanEmail;
 use App\Repositories\LoanRepository;
 use App\Models\Loan;
+use App\Notifications\LoanCreatedNotification;
 use Symfony\Component\HttpFoundation\Response;
 
 class LoanService
@@ -33,10 +35,16 @@ class LoanService
             'loan_date' => $loanDTO->loan_date,
             'due_date' => $loanDTO->return_date,
         ];
-        
-        //TODO: mandar o email da notificação
 
+        //TODO: mandar o email da notificação
         $loan = $this->loanRepository->createLoan($loanData);
+        
+        $user = $loan->user;
+        if ($user) {
+            $loan->user->notify(new LoanCreatedNotification());
+
+            // ProcessLoanEmail::dispatch($loan);
+        }
 
         return $loan;
     }

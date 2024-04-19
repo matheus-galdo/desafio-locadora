@@ -41,9 +41,7 @@ class LoanService
         
         $user = $loan->user;
         if ($user) {
-            $loan->user->notify(new LoanCreatedNotification());
-
-            // ProcessLoanEmail::dispatch($loan);
+            $loan->user->notify(new LoanCreatedNotification($loan));
         }
 
         return $loan;

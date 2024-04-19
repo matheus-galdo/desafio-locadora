@@ -2,20 +2,22 @@
 
 namespace App\Notifications;
 
+use App\Models\Loan;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class LoanCreatedNotification extends Notification
+class LoanCreatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
-    {
+    public function __construct(
+        protected Loan $loan
+    ) {
         //
     }
 
@@ -35,9 +37,14 @@ class LoanCreatedNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject('Novo Empréstimo Criado')
+            ->line('Um novo empréstimo foi criado com sucesso.')
+            ->line('Detalhes do Empréstimo:')
+            ->line('ID do Empréstimo: ' . $this->loan->id)
+            ->line('Livro: ' . $this->loan->book->title)
+            ->line('Data de Empréstimo: ' . $this->loan->loan_date)
+            ->line('Data de Devolução: ' . $this->loan->return_date)
+            ->action('Ver Empréstimo', url('/loans/' . $this->loan->id));
     }
 
     /**

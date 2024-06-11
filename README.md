@@ -56,6 +56,11 @@ git clone https://github.com/matheus-galdo/desafio-locadora
 cd desafio-locadora
 ```
 
+Instale as dependências usando o Composer:
+```
+composer install
+```
+
 Faça uma cópia do arquivo de configuração .env.example e chame-a de .env, configure as variáveis de ambiente neste arquivo, incluindo as configurações de banco de dados:
 ```
 cp .env.example .env
